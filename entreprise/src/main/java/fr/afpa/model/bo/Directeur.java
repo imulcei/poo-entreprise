@@ -3,6 +3,8 @@ package fr.afpa.model.bo;
 import java.time.LocalDate;
 import java.util.List;
 
+// TODO @Override de la méthode de calcul de prime
+
 public class Directeur extends Employe {
 
     public Directeur(String nom, String prenom, int dateEmbauche, String poste, int salaire, String service,

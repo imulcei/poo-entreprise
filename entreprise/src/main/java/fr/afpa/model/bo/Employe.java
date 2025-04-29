@@ -5,6 +5,14 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
+// TODO Ca aurait pu être une bonne idée de gérer chequeVacances dans le constructeur mais ici, le temps passant, chequeVacances ne sera plus à jour
+// Il vaut mieux faire ce que tu as fait dans un getter et supprimer le setter
+// La boucle WHILE n'est pas utile dans primeAnciennete
+// Ce n'est pas à la classe Employe de faire le tri par ordre alphabétique (employesTriesParNomPrenom / emmployesTriesNomPrenomService)
+// Ce n'est pas à la classe Employe de faire masseSalariale pour tous les employés
+// Ce n'est pas à la classe Employe de faire afficherModeDeRestauration
+// L'affichage ne doit pas se faire dans la classe Employe mais plutôt dans le main
+
 public class Employe {
     private Agence agence;
     private String nom;
