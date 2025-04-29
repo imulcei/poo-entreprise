@@ -194,7 +194,8 @@ public class Employe {
     public static int masseSalariale(List<Employe> employes) {
         int masseSalariale = 0;
         for (Employe e : employes) {
-            masseSalariale += e.getSalaire();
+            int primes = primeBrut(e.getSalaire()) + primeAnciennete(e.getDateEmbauche(), e.getSalaire());
+            masseSalariale += e.getSalaire() + primes;
         }
         return masseSalariale;
     }
