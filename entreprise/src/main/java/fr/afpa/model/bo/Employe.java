@@ -2,7 +2,6 @@ package fr.afpa.model.bo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 public class Employe {
@@ -13,11 +12,10 @@ public class Employe {
     private String poste;
     private int salaire;
     private String service;
-    private boolean chequeVacances;
     private List<Enfant> enfants;
 
     public Employe(String nom, String prenom, int dateEmbauche, String poste, int salaire, String service,
-            Agence agence, boolean chequeVacances, List<Enfant> enfants) {
+            Agence agence, List<Enfant> enfants) {
         this.nom = nom;
         this.prenom = prenom;
         this.dateEmbauche = dateEmbauche;
@@ -25,13 +23,6 @@ public class Employe {
         this.salaire = salaire;
         this.service = service;
         this.agence = agence;
-
-        if (LocalDate.now().getYear() - dateEmbauche >= 1) {
-            this.chequeVacances = true;
-        } else {
-            this.chequeVacances = false;
-        }
-
         this.enfants = enfants;
     }
 
@@ -92,11 +83,7 @@ public class Employe {
     }
 
     public boolean isChequeVacances() {
-        return chequeVacances;
-    }
-
-    public void setChequeVacances(boolean chequeVacances) {
-        this.chequeVacances = chequeVacances;
+        return LocalDate.now().getYear() - dateEmbauche >= 1;
     }
 
     public List<Enfant> getEnfants() {
@@ -113,32 +100,14 @@ public class Employe {
     }
 
     /**
-     * Calcule la prime annuelle de 5% sur le salaire brut.
+     * Calcule la prime annuelle de 5% et la prime d'ancienneté sur le salaire brut.
      * 
      * @param salaire
      * @return Renvoie le montant de la prime
      */
-    public static int primeBrut(int salaire) {
-        int prime = salaire * 5 / 100;
-        return prime;
-    }
-
-    /**
-     * Calcule la prime de 2% par année d'ancienneté
-     * 
-     * @param dateEmbauche
-     * @param salaire
-     * @return Renvoie le montant de la prime
-     */
-    public static int primeAnciennete(int dateEmbauche, int salaire) {
-        int anciennete = anneeDansLentreprise(dateEmbauche);
-        int i = 0;
-        int prime = 0;
-        while (i < anciennete) {
-            prime += salaire * 2 / 100;
-            i++;
-        }
-        System.out.println(anciennete);
+    public int primes() {
+        int prime = this.getSalaire() * 5 / 100;
+        prime += anneeDansLentreprise(this.getDateEmbauche()) * (this.getSalaire() * 2 / 100);
         return prime;
     }
 
@@ -148,73 +117,13 @@ public class Employe {
      * @param dateEmbauche
      * @param salaire
      */
-    public static void ordreDeTransfert(int dateEmbauche, int salaire) {
+    public void ordreDeTransfert() {
         int moisActuel = LocalDate.now().getMonth().getValue();
         int jourActuel = LocalDate.now().getDayOfMonth();
         System.out.println(moisActuel);
         if (moisActuel == 4 && jourActuel == 28) {
-            int primes = primeBrut(salaire) + primeAnciennete(dateEmbauche, salaire);
+            int primes = primes();
             System.out.println(primes + "€ a été versé à l'employé.");
-        }
-    }
-
-    /**
-     * Trie par ordre alphabétique la liste des employés via le nom et prénom
-     * 
-     * @param employes
-     */
-    public static void employesTriesParNomPrenom(List<Employe> employes) {
-        employes.sort(Comparator.comparing(Employe::getNom).thenComparing(Employe::getPrenom));
-
-        for (Employe e : employes) {
-            System.out.println(e.getNom() + " " + e.getPrenom());
-        }
-    }
-
-    /**
-     * Trie par ordre alphabétique la liste des employés via le nom, prénom, service
-     * 
-     * @param employes
-     */
-    public static void emmployesTriesNomPrenomService(List<Employe> employes) {
-        employes.sort(Comparator.comparing(Employe::getService).thenComparing(Employe::getNom)
-                .thenComparing(Employe::getPrenom));
-
-        for (Employe e : employes) {
-            System.out.println(e.getService() + " " + e.getNom() + " " + e.getPrenom());
-        }
-    }
-
-    /**
-     * Renvoie le montant de la masse salariale
-     * 
-     * @param employes
-     * @return
-     */
-    public static int masseSalariale(List<Employe> employes) {
-        int masseSalariale = 0;
-        for (Employe e : employes) {
-            int primes = primeBrut(e.getSalaire()) + primeAnciennete(e.getDateEmbauche(), e.getSalaire());
-            masseSalariale += e.getSalaire() + primes;
-        }
-        return masseSalariale;
-    }
-
-    /**
-     * Renvoie le type de restauration pour chqque employé
-     * 
-     * @param employes
-     */
-    public static void afficherModeDeRestauration(List<Employe> employes) {
-        for (Employe e : employes) {
-            Agence agence = e.getAgence();
-            String restauration = "";
-            if (agence.getRestauration() == true) {
-                restauration = "Self";
-            } else {
-                restauration = "Ticket Restaurant";
-            }
-            System.out.println(e.getNom() + " " + e.getPrenom() + " " + restauration);
         }
     }
 

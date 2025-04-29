@@ -1,5 +1,8 @@
 package fr.afpa.model.bo;
 
+import java.util.Comparator;
+import java.util.List;
+
 public class Agence {
     private String nom;
     private String adresse;
@@ -55,4 +58,63 @@ public class Agence {
         this.restauration = restauration;
     }
 
+    /**
+     * Trie par ordre alphabétique la liste des employés via le nom et prénom
+     * 
+     * @param employes
+     */
+    public static void employesTriesParNomPrenom(List<Employe> employes) {
+        employes.sort(Comparator.comparing(Employe::getNom).thenComparing(Employe::getPrenom));
+
+        for (Employe e : employes) {
+            System.out.println(e.getNom() + " " + e.getPrenom());
+        }
+    }
+
+    /**
+     * Trie par ordre alphabétique la liste des employés via le nom, prénom, service
+     * 
+     * @param employes
+     */
+    public static void emmployesTriesNomPrenomService(List<Employe> employes) {
+        employes.sort(Comparator.comparing(Employe::getService).thenComparing(Employe::getNom)
+                .thenComparing(Employe::getPrenom));
+
+        for (Employe e : employes) {
+            System.out.println(e.getService() + " " + e.getNom() + " " + e.getPrenom());
+        }
+    }
+
+    /**
+     * Renvoie le montant de la masse salariale
+     * 
+     * @param employes
+     * @return
+     */
+    public int masseSalariale(List<Employe> employes) {
+        int masseSalariale = 0;
+        for (Employe e : employes) {
+            int primes = e.primes();
+            masseSalariale += e.getSalaire() + primes;
+        }
+        return masseSalariale;
+    }
+
+    /**
+     * Renvoie le type de restauration pour chqque employé
+     * 
+     * @param employes
+     */
+    public void afficherModeDeRestauration(List<Employe> employes) {
+        for (Employe e : employes) {
+            Agence agence = e.getAgence();
+            String restauration;
+            if (agence.getRestauration() == true) {
+                restauration = "Self";
+            } else {
+                restauration = "Ticket Restaurant";
+            }
+            System.out.println(e.getNom() + " " + e.getPrenom() + " : " + restauration);
+        }
+    }
 }
